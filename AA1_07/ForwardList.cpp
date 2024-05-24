@@ -98,12 +98,32 @@ bool ForwardList::IsEmpty() const
 
 int ForwardList::Front() const
 {
-	return m_first->m_value;
+	int i;
+
+	if (m_first == nullptr)
+	{
+		i = -1;
+	}
+	else
+	{
+		i = m_first->m_value;
+	}
+	return i;
 }
 
 int ForwardList::Back() const
 {
-	return m_last->m_value;
+	int val;
+	if (m_last == nullptr)
+	{
+		val = -1;
+	}
+	else 
+	{
+		val = m_last->m_value;
+	}
+
+	return val;
 }
 
 int ForwardList::Size() const
@@ -115,25 +135,32 @@ void ForwardList::Erase(int value)
 {
 	if (IsEmpty()) return;
 
-	if (m_first->m_value == value)
-	{
-		PopFront();
-	}
-
 	Node* node = m_first;
-	while (node->m_next != nullptr)
+	Node* prevNode = nullptr;
+	while (node != nullptr)
 	{
-		if (node->m_next->m_value == value)
+		if (node->m_value == value)
 		{
-			Node* node2 = node->m_next;
+			Node* node2 = node;
+			if (prevNode == nullptr)
+			{
+				m_first = node->m_next;
+			}
+			else
+			{
+				prevNode->m_next = node->m_next;
+			}
 			
-			node->m_next = node2->m_next;
-
+			node = node->m_next;
+			
 			delete node2;
 			--m_size;
 		}
-
-		node = node->m_next;
+		else
+		{
+			prevNode = node;
+			node = node->m_next;
+		}
 	}
 
 	m_last = node;
@@ -141,6 +168,8 @@ void ForwardList::Erase(int value)
 
 void ForwardList::Insert(int value, int position)
 {
+	if (position < 0 || position > m_size) return;
+
 	if (position == 0)
 	{
 		PushFront(value);
@@ -152,24 +181,40 @@ void ForwardList::Insert(int value, int position)
 	else
 	{
 		Node* node = m_first;
-		for (int i = 1; i < position; ++i)
+		for (int i = 0; i < position; ++i)
 		{
 			node = node->m_next;
 		}
 
 		Node* node2 = new Node(value, node->m_next);
 		node->m_next = node2;
+		++m_size;
 	}
-
-	++m_size;
 }
 
-//friend bool ForwardList::operator==(const ForwardList& l1, const ForwardList& l2)
-//{
-//
-//}
-//
-//friend std::ostream& ForwardList::operator<<(std::ostream& o, const ForwardList& l)
-//{
-//
-//}
+bool operator==(const ForwardList& l1, const ForwardList& l2)
+{
+	if (l1.m_size != l2.m_size) return false;
+
+	ForwardList::Node* node = l1.m_first;
+	ForwardList::Node* node2 = l2.m_first;
+
+	while (node != nullptr) {
+		if (node->m_value != node2->m_value) return false;
+		node = node->m_next;
+		node2 = node->m_next;
+	}
+
+	return true;
+}
+
+std::ostream& operator<<(std::ostream& o, const ForwardList& l)
+{
+	ForwardList::Node* node = l.m_first;
+	while (node != nullptr) {
+		o << node->m_value << " ";
+		node = node->m_next;
+	}
+
+	return o;
+}
