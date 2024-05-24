@@ -23,7 +23,36 @@ int main()
     fList.Erase(1);
     std::cout << fList << "\n"; // 2 3 
 
-    fList.Insert(4, 2);
+    fList.Insert(4, 0);
+    fList.Insert(8, 3);
+    fList.Insert(8, 8);
     std::cout << fList << "\n"; // 4 2 3 
 
+    ForwardList fList2;
+    fList2.PushBack(3);
+    fList2.PushBack(15);
+    fList2.PushBack(20);
+    fList2.PushBack(21);
+    if (fList == fList2)
+    {
+        std::cout << "Equal" << "\n";
+    }
+    else
+    {
+        std::cout << "Non Equal" << "\n";
+    }
+
+    ForwardList fList3;
+    fList3.PushBack(3);
+    fList3.PushBack(15);
+    fList3.PushBack(20);
+    fList3.PushBack(21);
+    if (fList2 == fList3)
+    {
+        std::cout << "Equal" << "\n";
+    }
+    else
+    {
+        std::cout << "Non Equal" << "\n";
+    }
 }

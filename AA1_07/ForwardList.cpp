@@ -11,8 +11,9 @@ ForwardList::~ForwardList()
 {
 	if (m_first != nullptr)
 	{
-		delete m_first;
-		delete m_last;
+		Node* node = m_first;
+		m_first = m_first->m_next;
+		delete node;
 	}
 }
 
@@ -93,22 +94,22 @@ void ForwardList::PopFront()
 
 bool ForwardList::IsEmpty() const 
 {
-	return m_size == 0;
+	return m_first == nullptr;
 }
 
 int ForwardList::Front() const
 {
-	int i;
+	int val;
 
 	if (m_first == nullptr)
 	{
-		i = -1;
+		val = -1;
 	}
 	else
 	{
-		i = m_first->m_value;
+		val = m_first->m_value;
 	}
-	return i;
+	return val;
 }
 
 int ForwardList::Back() const
@@ -135,30 +136,23 @@ void ForwardList::Erase(int value)
 {
 	if (IsEmpty()) return;
 
-	Node* node = m_first;
-	Node* prevNode = nullptr;
-	while (node != nullptr)
+	while (m_first != nullptr && m_first->m_value == value)
 	{
-		if (node->m_value == value)
+		PopFront();
+	}
+
+	Node* node = m_first;
+	while (node->m_next != nullptr)
+	{
+		if (node->m_next->m_value == value)
 		{
-			Node* node2 = node;
-			if (prevNode == nullptr)
-			{
-				m_first = node->m_next;
-			}
-			else
-			{
-				prevNode->m_next = node->m_next;
-			}
-			
-			node = node->m_next;
-			
+			Node* node2 = node->m_next;
+			node->m_next = node->m_next->m_next;
 			delete node2;
 			--m_size;
 		}
 		else
 		{
-			prevNode = node;
 			node = node->m_next;
 		}
 	}
@@ -181,7 +175,7 @@ void ForwardList::Insert(int value, int position)
 	else
 	{
 		Node* node = m_first;
-		for (int i = 0; i < position; ++i)
+		for (int i = 1; i < position; ++i)
 		{
 			node = node->m_next;
 		}
@@ -201,8 +195,8 @@ bool operator==(const ForwardList& l1, const ForwardList& l2)
 
 	while (node != nullptr) {
 		if (node->m_value != node2->m_value) return false;
-		node = node->m_next;
 		node2 = node->m_next;
+		node = node->m_next;
 	}
 
 	return true;
